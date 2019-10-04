@@ -6,5 +6,5 @@ public interface IProductRepository {
 
     Product addNewProduct(Product product);
     Product getProductById(int id);
-    Product updateProductById(Product product);
+    Product updateProductById(Product product, int id);
 }

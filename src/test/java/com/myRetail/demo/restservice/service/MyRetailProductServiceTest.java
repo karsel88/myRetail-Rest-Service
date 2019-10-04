@@ -9,16 +9,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Random;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("local")
 public class MyRetailProductServiceTest {
 
     private double CHECK_PRICE = 1.49;
@@ -82,7 +81,7 @@ public class MyRetailProductServiceTest {
         product.setId(13860428);
         product.setName("The Big Lebowski (Blu-ray)");
         product.setPrice(new Price(1.49,"USD",null));
-        productRepository.updateProductById(product);
+        productRepository.updateProductById(product,13860428);
 
         Product updatedProduct = productRepository.getProductById(13860428);
         double updatedPrice = productRepository.getProductById(13860428).getPrice().getPrice();

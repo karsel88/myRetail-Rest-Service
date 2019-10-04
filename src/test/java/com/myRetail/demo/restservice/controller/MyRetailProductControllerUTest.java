@@ -13,7 +13,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("local")
 public class MyRetailProductControllerUTest {
 
 
@@ -48,7 +46,7 @@ public class MyRetailProductControllerUTest {
 
     @Test
     public void test_getProductById(){
-        Response detail = RestAssured.when().get(API_URL+ "/products/13860428")
+        Response detail = RestAssured.when().get(API_URL+ "/product/13860428")
                 .then().statusCode(HttpStatus.SC_OK)
                 .log().body()
                 .extract().response();
@@ -66,7 +64,7 @@ public class MyRetailProductControllerUTest {
         Response detail = RestAssured.given()
                 .contentType("application/json")
                 .body(product)
-                .when().put(API_URL+ "/products/13860428")
+                .when().put(API_URL+ "/product/13860428")
                 .then().statusCode(HttpStatus.SC_OK)
                 .log().body()
                 .extract().response();
@@ -85,7 +83,7 @@ public class MyRetailProductControllerUTest {
         Response detail = RestAssured.given()
                 .contentType("application/json")
                 .body(product)
-                .when().post(API_URL+ "/products/addNew")
+                .when().post(API_URL+ "/product/addNew")
                 .then().statusCode(HttpStatus.SC_OK)
                 .log().body()
                 .extract().response();

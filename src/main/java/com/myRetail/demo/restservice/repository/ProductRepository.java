@@ -1,7 +1,7 @@
 package com.myRetail.demo.restservice.repository;
 
 import com.myRetail.demo.restservice.domain.Product;
-import com.myRetail.demo.restservice.exception.ProductException;
+import com.myRetail.demo.restservice.exception.ProductNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -26,17 +26,17 @@ public class ProductRepository implements IProductRepository {
             Query query = new Query();
             query.addCriteria(Criteria.where("id").is(id));
             Product product = mongoTemplate.findOne(query, Product.class);
-            if(product == null){throw new ProductException("Product not found for id:",String.valueOf(id));}
+            if(product == null){throw new ProductNotFoundException("Product not found for id:",String.valueOf(id));}
             return product;
    }
 
     @Override
-    public Product updateProductById(Product product) {
+    public Product updateProductById(Product product, int id) {
         Query query = new Query();
-        query.addCriteria(Criteria.where("id").is(product.getId()));
+        query.addCriteria(Criteria.where("id").is(id));
         if(mongoTemplate.findOne(query,Product.class) != null){
             mongoTemplate.updateFirst(query,Update.update("price",product.getPrice()),Product.class);
             return mongoTemplate.findOne(query,Product.class);
-        }else { throw new ProductException("Product not found for id:",String.valueOf(product.getId())); }
+        }else { throw new ProductNotFoundException("Product not found for id:",String.valueOf(id)); }
     }
 }

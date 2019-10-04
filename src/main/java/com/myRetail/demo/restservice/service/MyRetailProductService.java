@@ -4,6 +4,7 @@ import com.myRetail.demo.restservice.domain.Price;
 import com.myRetail.demo.restservice.domain.Product;
 import com.myRetail.demo.restservice.domain.Products;
 import com.myRetail.demo.restservice.exception.ProductException;
+import com.myRetail.demo.restservice.exception.ProductNotFoundException;
 import com.myRetail.demo.restservice.repository.IProductRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,7 @@ public class MyRetailProductService implements IMyRetailProductService {
      */
     @Override
     @Cacheable("product")
-    public Product getProductById(int id) throws ProductException {
+    public Product getProductById(int id) {
         try {
             String productDescription = getProductDescriptionById(id);
             Product product = new Product();
@@ -54,8 +55,8 @@ public class MyRetailProductService implements IMyRetailProductService {
             product.setPrice(productRepository.getProductById(id).getPrice());
             Thread.sleep(1000 * 5); // Added just to demonstrate the caching
             return product;
-        }catch(ProductException e ){
-            throw new ProductException("Product not found for id:",String.valueOf(id));
+        }catch(ProductNotFoundException e ){
+            throw new ProductNotFoundException("Product not found for id:",String.valueOf(id));
         }catch(InterruptedException e){
             log.info("Thread interrupted during sleep ", e.getMessage());
             return null;
@@ -66,12 +67,8 @@ public class MyRetailProductService implements IMyRetailProductService {
      */
     @Override
     @CacheEvict(cacheNames="product", key ="#root.args[0].id")
-    public Product updateProductById(Product product) {
-        try {
-            return validateProduct(product)? productRepository.updateProductById(product) : null;
-        }catch(ProductException e ){
-            throw new ProductException("Error occurred while updating the product:",String.valueOf(product.getId()));
-        }
+    public Product updateProductById(Product product, int id) {
+            return validateProduct(product)? productRepository.updateProductById(product,id) : null;
     }
 
     /*
@@ -111,8 +108,11 @@ public class MyRetailProductService implements IMyRetailProductService {
 
     private boolean validateProduct(Product product){
         Price price = product.getPrice();
-        if (price.getPrice() == null || price.getPrice() <= 0.0 || price.getCurrencyCode() == null || price.getCurrencyCode().trim().equals("")){
-            throw new ProductException("Invalid Price:",price.toString());
+        if (price.getPrice() == null || price.getPrice() <= 0.0 ){
+            throw new ProductException("Invalid Price:",price.getPrice().toString());
+        }
+        if(price.getCurrencyCode() == null || price.getCurrencyCode().trim().equals("")){
+            throw new ProductException("Currency code cannot be null:",price.getCurrencyCode());
         }
         return true;
     }
