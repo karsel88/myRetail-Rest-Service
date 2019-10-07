@@ -3,6 +3,7 @@ package com.myRetail.demo.restservice.service;
 import com.myRetail.demo.restservice.domain.Price;
 import com.myRetail.demo.restservice.domain.Product;
 import com.myRetail.demo.restservice.exception.ProductException;
+import com.myRetail.demo.restservice.exception.ProductNotFoundException;
 import com.myRetail.demo.restservice.repository.ProductRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -70,7 +71,7 @@ public class MyRetailProductServiceTest {
         try {
             Product product = productRepository.getProductById(13860430);
         }catch(Exception e) {
-            assert e instanceof ProductException;
+            assert e instanceof ProductNotFoundException;
             assertEquals("Product not found for id:13860430", e.getMessage());
         }
     }
